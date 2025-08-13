@@ -1,6 +1,10 @@
 ![Niva](logo/niva-title-logo-white.png)
-#  Niva
 
+# Niva
+
+（这里是原 Niva 项目的维护 Fork，版本号为 0.9.91）
+（对 [http-api](packages/website/docs/api/http.md) 进行了重构，增加了二进制数据的支持）
+（增加了 [exec-api](packages/website/docs/api/process.md) 静默执行的支持）
 基于 Tauri WRY 跨端 Webview 库的超轻量极易用的跨端应用开发框架。
 
 ![screenshot](screenshots/screenshot1.png)
@@ -56,7 +60,7 @@ Niva 提供了丰富的 API, 如 clipboard, dialog, extra, fs, http, monitor, os
 
 ## Acknowledgments
 
-[@wen-gang(晓港)](https://github.com/wen-gang)  - 感谢晓港帮 Niva 设计了新的 Logo
+[@wen-gang(晓港)](https://github.com/wen-gang) - 感谢晓港帮 Niva 设计了新的 Logo
 
 ## Contributors
 
