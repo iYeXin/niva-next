@@ -9,9 +9,10 @@
 
 ![screenshot](screenshots/screenshot1.png)
 
-- 下载： [https://github.com/bramblex/niva/releases](https://github.com/bramblex/niva/releases)
-- 文档： [https://bramblex.github.io/niva/docs/intro](https://bramblex.github.io/niva/docs/intro)
-- 快速上手： [https://bramblex.github.io/niva/docs/tutorial/new-project](https://bramblex.github.io/niva/docs/tutorial/new-project)
+- V0.9.91 开发工具下载：[https://github.com/iYeXin/niva-next/releases](https://github.com/iYeXin/niva-next/releases)
+- 原项目开发工具下载： [https://github.com/bramblex/niva/releases](https://github.com/bramblex/niva/releases)
+- 文档： [packages/website/docs/api/](packages/website/docs/api/)
+- 快速上手（参见原项目）： [https://bramblex.github.io/niva/docs/tutorial/new-project](https://bramblex.github.io/niva/docs/tutorial/new-project)
 
 ## 目标
 
@@ -42,7 +43,7 @@
 
 ### 完善的 API
 
-Niva 提供了丰富的 API, 如 clipboard, dialog, extra, fs, http, monitor, os, process, resource, shortcut, tray, webview, window, window_extra 等 API。详见 [API 文档](https://bramblex.github.io/niva/docs/api/niva)。
+Niva 提供了丰富的 API, 如 clipboard, dialog, extra, fs, http, monitor, os, process, resource, shortcut, tray, webview, window, window_extra 等 API。详见 [API 文档](packages/website/docs/api/)。
 
 ## Todo
 
