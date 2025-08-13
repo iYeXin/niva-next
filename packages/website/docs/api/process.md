@@ -1,6 +1,7 @@
 # 进程 process
 
 ## Niva.api.process.pid
+
 ```ts
 /**
  * 获取当前进程的进程 ID。
@@ -10,6 +11,7 @@ export function pid(): Promise<number>;
 ```
 
 ## Niva.api.process.currentDir
+
 ```ts
 /**
  * 获取当前工作目录。
@@ -19,6 +21,7 @@ export function currentDir(): Promise<string>;
 ```
 
 ## Niva.api.process.currentExe
+
 ```ts
 /**
  * 获取当前可执行文件的路径。
@@ -28,6 +31,7 @@ export function currentExe(): Promise<string>;
 ```
 
 ## Niva.api.process.env
+
 ```ts
 /**
  * 获取系统环境变量。
@@ -37,6 +41,7 @@ export function env(): Promise<Record<string, string>>;
 ```
 
 ## Niva.api.process.args
+
 ```ts
 /**
  * 获取命令行参数。
@@ -46,6 +51,7 @@ export function args(): Promise<string[]>;
 ```
 
 ## Niva.api.process.setCurrentDir
+
 ```ts
 /**
  * 设置当前工作目录。
@@ -56,6 +62,7 @@ export function setCurrentDir(path: string): Promise<void>;
 ```
 
 ## Niva.api.process.exit
+
 ```ts
 /**
  * 退出 Niva 程序。
@@ -65,11 +72,13 @@ export function exit(): Promise<void>;
 ```
 
 ## Niva.api.process.exec
+
 ```ts
 interface ExecOptions {
   env?: Record<string, string>;
   current_dir?: string;
   detached?: boolean;
+  silent?: boolean;
 }
 /**
  * 在子进程中执行指定的命令。
@@ -90,6 +99,7 @@ export function exec(
 ```
 
 ## Niva.api.process.open
+
 ```ts
 /**
  * 打开指定的 URI。
@@ -100,6 +110,7 @@ export function open(uri: string): Promise<void>;
 ```
 
 ## Niva.api.process.version
+
 ```ts
 /**
  * 获取当前 Niva 程序的版本号。

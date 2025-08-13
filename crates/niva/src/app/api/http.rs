@@ -1,95 +1,101 @@
 use anyhow::Result;
+use base64; 
 use niva_macros::niva_api;
 use serde::Deserialize;
 use serde_json::{json, Value};
-use std::{collections::HashMap, sync::Arc};
+use std::{collections::HashMap, io::Read, sync::Arc};
 
 use crate::app::api_manager::ApiManager;
 
 pub fn register_api_instances(api_manager: &mut ApiManager) {
-    api_manager.register_async_api("http.request", request);
-    api_manager.register_async_api("http.get", get);
-    api_manager.register_async_api("http.post", post);
+    api_manager.register_async_api("http.fetch", fetch);
 }
 
 type Headers = HashMap<String, String>;
 
 #[derive(Deserialize)]
-struct RequestOptions {
-    pub method: String,
+#[serde(rename_all = "camelCase")]
+struct FetchOptions {
     pub url: String,
-    pub headers: Option<Headers>,
+    #[serde(default = "default_method")]
+    pub method: String,
+    #[serde(default)]
+    pub headers: Headers,
+    #[serde(default)]
     pub body: Option<String>,
+    #[serde(default)]
     pub proxy: Option<String>,
+    #[serde(default = "default_response_type")]
+    pub response_type: String,
 }
 
-fn _request(options: RequestOptions) -> Result<Value> {
+fn default_method() -> String {
+    "GET".to_string()
+}
+
+fn default_response_type() -> String {
+    "text".to_string()
+}
+
+#[niva_api]
+fn fetch(options: FetchOptions) -> Result<Value> {
     let mut agent_builder =
         ureq::AgentBuilder::new().tls_connector(Arc::new(native_tls::TlsConnector::new()?));
 
-    if let Some(proxy) = options.proxy {
+    if let Some(proxy) = &options.proxy {
         let proxy = ureq::Proxy::new(proxy)?;
         agent_builder = agent_builder.proxy(proxy);
     }
 
     let agent = agent_builder.build();
+    let method = options.method.to_uppercase();
+    let mut http_request = agent.request(&method, &options.url);
 
-    let mut http_request = agent.request(&options.method, options.url.as_str());
+    // 设置请求头
+    for (key, value) in &options.headers {
+        http_request = http_request.set(key, value);
+    }
 
-    if let Some(headers) = options.headers {
-        for (key, value) in headers {
-            http_request = http_request.set(key.as_str(), value.as_str());
-        }
+    // 发送请求
+    let http_response = match &options.body {
+        Some(body) => http_request.send_string(body)?,
+        None => http_request.call()?,
     };
 
-    let http_response = if let Some(body) = options.body {
-        http_request.send_string(body.as_str())?
-    } else {
-        http_request.call()?
-    };
-
+    // 获取响应信息
     let status = http_response.status();
-    let header_names = http_response.headers_names();
-
+    let status_text = http_response.status_text().to_string();
     let mut response_headers = HashMap::new();
-    for name in header_names {
+    
+    for name in http_response.headers_names() {
         if let Some(value) = http_response.header(&name) {
             response_headers.insert(name, value.to_string());
         }
     }
 
-    let body = http_response.into_string()?;
+    // 处理响应体
+    let response = if options.response_type == "binary" {
+        let mut reader = http_response.into_reader();
+        let mut bytes = Vec::new();
+        reader.read_to_end(&mut bytes)?;
+        
+        json!({
+            "body": base64::encode(&bytes),
+            "bodyType": "base64"
+        })
+    } else {
+        json!({
+            "body": http_response.into_string()?,
+            "bodyType": "text"
+        })
+    };
 
     Ok(json!({
         "status": status,
+        "statusText": status_text,
+        "ok": status >= 200 && status < 300,
         "headers": response_headers,
-        "body": body,
+        "url": options.url, 
+        "response": response
     }))
-}
-
-#[niva_api]
-fn request(options: RequestOptions) -> Result<Value> {
-    _request(options)
-}
-
-#[niva_api]
-fn get(url: String, headers: Option<Headers>) -> Result<Value> {
-    _request(RequestOptions {
-        method: "GET".to_string(),
-        url,
-        headers,
-        body: None,
-        proxy: None,
-    })
-}
-
-#[niva_api]
-fn post(url: String, body: String, headers: Option<Headers>) -> Result<Value> {
-    _request(RequestOptions {
-        method: "POST".to_string(),
-        url,
-        headers,
-        body: Some(body),
-        proxy: None,
-    })
 }
