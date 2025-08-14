@@ -2,13 +2,11 @@
 
 # Niva
 
-### （这里是[原 Niva 项目](https://github.com/bramblex/niva/)的维护 Fork，版本号为 0.9.91）
+- （这里是[原 Niva 项目](https://github.com/bramblex/niva/)的维护 Fork，版本号为 0.9.91）
 
-### （对 [http-api](packages/website/docs/api/http.md) 进行了重构，增加了二进制数据的支持）
+- [关于修改](#修改)
 
-### （增加了 [exec-api](packages/website/docs/api/process.md) 静默执行的支持）
-
-### 基于 Tauri WRY 跨端 Webview 库的超轻量极易用的跨端应用开发框架。
+基于 Tauri WRY 跨端 Webview 库的超轻量极易用的跨端应用开发框架。
 
 ![screenshot](screenshots/screenshot1.png)
 
@@ -61,6 +59,18 @@ Niva 提供了丰富的 API, 如 clipboard, dialog, extra, fs, http, monitor, os
 
 - [ ] Niva 2.0
   - [ ] 对 Window10 低版本增加 [miniblink](https://github.com/weolar/miniblink49) 支持，解决低版本 Windows 对 Webview2 支持不完善的问题。
+
+## 修改
+
+这个 fork 中进行了下述修改：
+
+- 修正了 windows-api 的部分文档错误
+- 根据原项目的部分 issues 和个人使用体验做出了一些修复
+
+1. 为 Niva.api.process.exec 添加了静默执行选项
+2. 将原来的 http-api 重构为 Niva.api.http.fetch 增加了更多可选功能和对二进制数据的支持
+3. 修改了一些事件 id 的数据类型，解决了原先超过部分调用功能超过 256 次后应用崩溃的情况
+4. 明确了部分限制：窗口数量不能超过 8 个，每个窗口的项目支持（如托盘 快捷键）不能超过 8192 个
 
 ## Acknowledgments
 

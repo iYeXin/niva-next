@@ -19,7 +19,7 @@ pub fn arc_mut<T>(t: T) -> ArcMut<T> {
 }
 
 pub struct IdCounter {
-    next_id: u8,
+    next_id: u16,
 }
 
 impl IdCounter {
@@ -27,8 +27,8 @@ impl IdCounter {
         Self { next_id: 0 }
     }
 
-    pub fn next<T>(&mut self, excludes: &HashMap<u8, T>) -> Result<u8> {
-        for _ in 0..u8::MAX {
+    pub fn next<T>(&mut self, excludes: &HashMap<u16, T>) -> Result<u16> {
+        for _ in 0..u16::MAX {
             let id = self.next_id;
             if excludes.contains_key(&id) {
                 self.next_id += 1;
@@ -172,10 +172,12 @@ pub fn url_join(left: &str, right: &str) -> String {
     }
 }
 
-pub fn merge_id(window_id: u8, item_id: u8) -> u16 {
-    ((window_id as u16) << 8) | (item_id as u16)
+pub fn merge_id(window_id: u16, item_id: u16) -> u16 {
+    ((window_id & 0x7) << 13) | (item_id & 0x1FFF)
 }
 
-pub fn split_id(merged_id: u16) -> (u8, u8) {
-    ((merged_id >> 8) as u8, merged_id as u8)
+pub fn split_id(merged_id: u16) -> (u16, u16) {
+    let window_id = (merged_id >> 13) & 0x7;
+    let item_id = merged_id & 0x1FFF;
+    (window_id, item_id)
 }

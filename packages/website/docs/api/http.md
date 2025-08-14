@@ -25,6 +25,13 @@ export function fetch(options: {
    */
   headers?: { [key: string]: string };
 
+  /**
+   * 请求体内容
+   * - 'text': 默认值
+   * - 'binary': 按二进制数据处理，此时 body 需传入 base64 字符串
+   */
+  bodyType?: "text" | "binary";
+
   /** 请求体内容 */
   body?: string;
 

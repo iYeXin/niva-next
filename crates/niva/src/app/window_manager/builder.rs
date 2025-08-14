@@ -37,7 +37,7 @@ impl NivaBuilder {
     pub fn build_window(
         app: &Arc<NivaApp>,
         manager: &WindowManager,
-        _id: u8,
+        _id: u16,
         options: &NivaWindowOptions,
         target: &NivaWindowTarget,
     ) -> Result<Window> {
@@ -324,7 +324,7 @@ impl NivaBuilder {
     }
 
     pub fn build_menu(
-        window_id: u8,
+        window_id: u16,
         app: &Arc<NivaApp>,
         menu_options: &Option<WindowMenuOptions>,
     ) -> Option<MenuBar> {
@@ -354,7 +354,7 @@ impl NivaBuilder {
     }
 
     fn build_custom_menu(
-        window_id: u8,
+        window_id: u16,
         app: &Arc<NivaApp>,
         menu: &mut MenuBar,
         options: &MenuOptions,

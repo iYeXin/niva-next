@@ -23,7 +23,7 @@ export function current(): Promise<number>;
 export function open(options: NivaWindowOptions): Promise<number>;
 ```
 
-## Niva.event.window.close
+## Niva.api.window.close
 
 ```ts
 /**

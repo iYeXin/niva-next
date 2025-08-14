@@ -33,7 +33,7 @@ pub struct NivaWindowState {
 }
 
 pub struct NivaWindow {
-    pub id: u8,
+    pub id: u16,
     pub window_id: WindowId,
     pub webview: WebView,
     pub menu_options: ArcMut<Option<WindowMenuOptions>>,
@@ -55,7 +55,7 @@ impl NivaWindow {
     pub fn new(
         app: Arc<NivaApp>,
         manager: &mut WindowManager,
-        id: u8,
+        id: u16,
         options: &NivaWindowOptions,
         target: &NivaWindowTarget,
     ) -> Result<Arc<NivaWindow>> {

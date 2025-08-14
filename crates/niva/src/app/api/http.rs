@@ -24,6 +24,8 @@ struct FetchOptions {
     #[serde(default)]
     pub body: Option<String>,
     #[serde(default)]
+    pub body_type: Option<String>, // 新增字段，标识body类型
+    #[serde(default)]
     pub proxy: Option<String>,
     #[serde(default = "default_response_type")]
     pub response_type: String,
@@ -56,9 +58,21 @@ fn fetch(options: FetchOptions) -> Result<Value> {
         http_request = http_request.set(key, value);
     }
 
-    // 发送请求
+    // 发送请求（支持base64编码的二进制数据）
     let http_response = match &options.body {
-        Some(body) => http_request.send_string(body)?,
+        Some(body) => {
+            // 检查body类型，如果是binary则解码
+            if let Some(body_type) = &options.body_type {
+                if body_type == "binary" {
+                    let bytes = base64::decode(body)?;
+                    http_request.send_bytes(&bytes)?
+                } else {
+                    http_request.send_string(body)?
+                }
+            } else {
+                http_request.send_string(body)?
+            }
+        }
         None => http_request.call()?,
     };
 
