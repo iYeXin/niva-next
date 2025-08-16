@@ -1,34 +1,34 @@
 import { parseVersion } from "../common/utils";
 
+// 添加缺失的字段并确保格式正确
 export function versionInfoTemplate(config: any) {
-  const numberVersion = parseVersion(config.meta?.version || "").join(",");
-
-  return `
-1 VERSIONINFO
+  const version = config.meta?.version || "1.0.0.0";
+  const numberVersion = parseVersion(version).join(",");
+  
+  // 添加资源标识符 '1 VERSIONINFO'
+  return `1 VERSIONINFO
 FILEVERSION ${numberVersion}
 PRODUCTVERSION ${numberVersion}
 FILEOS 0x40004
 FILETYPE 0x1
 {
-BLOCK "StringFileInfo"
-{
-  BLOCK "040904b0"
+  BLOCK "StringFileInfo"
   {
-    VALUE "CompanyName", ${JSON.stringify(config.meta?.companyName || "")}
-    VALUE "FileDescription", ${JSON.stringify(config.meta?.description || "")}
-    VALUE "FileVersion", ${JSON.stringify(config.meta?.version)}
-    VALUE "InternalName", "niva.exe"
-    VALUE "LegalCopyright", ${JSON.stringify(config.meta?.copyright || "")}
-    VALUE "OriginalFilename", "niva.exe"
-    VALUE "ProductName", ${JSON.stringify(config.name)}
-    VALUE "ProductVersion", ${JSON.stringify(config.meta?.version)}
-    VALUE "SquirrelAwareVersion", "1"
+    BLOCK "040904b0"
+    {
+      VALUE "CompanyName", "${config.meta?.companyName || ""}"
+      VALUE "FileDescription", "${config.meta?.description || ""}"
+      VALUE "FileVersion", "${version}"
+      VALUE "InternalName", "${config.name || "niva.exe"}"
+      VALUE "LegalCopyright", "${config.meta?.copyright || ""}"
+      VALUE "OriginalFilename", "${config.name || "niva.exe"}"
+      VALUE "ProductName", "${config.name}"
+      VALUE "ProductVersion", "${version}"
+    }
   }
-}
-
-BLOCK "VarFileInfo"
-{
-  VALUE "Translation", 0x0409 0x04B0  
-}
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x0409 0x04B0
+  }
 }`;
 }

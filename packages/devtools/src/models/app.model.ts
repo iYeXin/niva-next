@@ -36,9 +36,11 @@ export class AppModel extends StateModel<{
     );
     const { history, locale, modal } = this.state;
     await Promise.all([history.init(), locale.init()])
-    initEndPromise.then(() => {
-      checkVersion(modal, locale);
-    })
+
+    // 取消版本验证
+    // initEndPromise.then(() => {
+    //   checkVersion(modal, locale);
+    // })
   }
 
   async openWithPicker(): Promise<AppResult> {

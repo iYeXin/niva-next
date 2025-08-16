@@ -12,13 +12,14 @@
 
 - V0.9.91 开发工具下载：[https://github.com/iYeXin/niva-next/releases](https://github.com/iYeXin/niva-next/releases)
 - 原项目开发工具下载： [https://github.com/bramblex/niva/releases](https://github.com/bramblex/niva/releases)
-- 文档： [packages/website/docs/api/](packages/website/docs/api/)
-- 快速上手（参见原项目）： [https://bramblex.github.io/niva/docs/tutorial/new-project](https://bramblex.github.io/niva/docs/tutorial/new-project)
+- Niva-next 文档： [https://niva.yeside.top/](https://niva.yeside.top/)
+- Niva 原项目文档：[https://bramblex.github.io/niva/](https://bramblex.github.io/niva/)
+- 快速上手（参见原项目）： [https://niva.yeside.top/start/create](https://niva.yeside.top/start/create)
 
 ## 目标
 
 - 超轻量
-  - 构建的桌面应用最小只有 3MB，仅有 Electron 的 1/10。
+  - 构建的桌面应用最小只有 3MB，仅有 Electron 的 1/30。
   - Niva 仅依赖系统原生的 Webview，不依赖 Chromium 或者 Node.js，极致的轻量。
 - 极易用
   - 仅使用前端技术，不需要学习复杂的 Node.js 和 Electron API 也不需要复杂的配置，即可构建出一个桌面应用。
@@ -40,11 +41,11 @@
 
 ### 丰富的配置
 
-丰富的配置，窗口大小、窗口标题、窗口图标、窗口菜单、窗口是否可缩放、窗口是否可拖动、窗口是否可关闭、窗口是否可最大化、窗口是否可最小化等等都可以配置。全局快捷键、系统托盘图标等等也可以进行配置。详细选项文档 [选项文档](https://bramblex.github.io/niva/docs/options/project) 。
+丰富的配置，窗口大小、窗口标题、窗口图标、窗口菜单、窗口是否可缩放、窗口是否可拖动、窗口是否可关闭、窗口是否可最大化、窗口是否可最小化等等都可以配置。全局快捷键、系统托盘图标等等也可以进行配置。详细选项文档 [选项文档](https://niva.yeside.top/options) 。
 
 ### 完善的 API
 
-Niva 提供了丰富的 API, 如 clipboard, dialog, extra, fs, http, monitor, os, process, resource, shortcut, tray, webview, window, window_extra 等 API。详见 [API 文档](packages/website/docs/api/)。
+Niva 提供了丰富的 API, 如 clipboard, dialog, extra, fs, http, monitor, os, process, resource, shortcut, tray, webview, window, window_extra 等 API。详见 [API 文档](https://niva.yeside.top/api)。
 
 ## Todo
 

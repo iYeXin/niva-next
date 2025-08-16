@@ -70,19 +70,39 @@ export async function buildWindowsApp(params: BuildParams): Promise<string> {
     await process.exec(pathJoin(buildPath, "icon_creator.exe"), [
       iconPath,
       pathJoin(buildPath, "icon.ico"),
+    ],{silent: true});
+  });
+
+  // 生成版本信息文件
+  const versionRcPath = pathJoin(buildPath, "version.rc");
+  const versionResPath = pathJoin(buildPath, "version.res");
+  
+  progress.addTask(locale.t("GENERATING_VERSION_INFO"), async () => {
+    await fs.write(versionRcPath, versionInfoTemplate(project.state.config));
+  });
+
+  // 提取并准备ResourceHacker
+  let resourceHackerPath = "";
+  progress.addTask(locale.t("PREPARING_RESOURCE_TOOLS"), async () => {
+    resourceHackerPath = pathJoin(buildPath, "ResourceHacker.exe");
+    await resource.extract(
+      "windows/ResourceHacker.exe",
+      resourceHackerPath
+    );
+  });
+
+  // 编译版本信息资源
+  progress.addTask(locale.t("COMPILING_VERSION_INFO"), async () => {
+    await runCmd(resourceHackerPath, [
+      "-open", versionRcPath,
+      "-save", versionResPath,
+      "-action", "compile",
+      "-log", "NUL" 
     ]);
   });
 
   progress.addTask(locale.t("BUILD_EXECUTABLE_FILE"), async () => {
-    await resource.extract(
-      "windows/ResourceHacker.exe",
-      pathJoin(buildPath, "ResourceHacker.exe")
-    );
-
-    const versionInfoPath = pathJoin(buildPath, "VERSION_INFO");
-    await fs.write(versionInfoPath, versionInfoTemplate(project.state.config));
-
-    const iconScript = `
+    const iconScript = project.state.config.icon ? `
 -delete ICON,1,0
 -delete ICON,2,0
 -delete ICON,3,0
@@ -90,35 +110,48 @@ export async function buildWindowsApp(params: BuildParams): Promise<string> {
 -delete ICON,5,0
 -delete ICON,6,0
 -delete ICON,7,0
--addoverwrite ${pathJoin(buildPath, "icon.ico")}, ICONGROUP,1,1033
-`;
+
+-addoverwrite "${pathJoin(buildPath, "icon.ico")}", ICONGROUP,1,1033
+` : "";
 
     const script = `
 [FILENAMES]
-Exe=    ${currentExe}
-SaveAs= ${targetExe}
-Log=    ${pathJoin(buildPath, "ResourceHacker.log")}
+Exe=    "${currentExe}"
+SaveAs= "${targetExe}"
+Log=    "${pathJoin(buildPath, "ResourceHacker.log")}"
 [COMMANDS]
--addoverwrite ${indexesPath}, RCDATA,${indexesKey},1033
--addoverwrite ${dataPath}, RCDATA,${dataKey},1033
-${project.state.config.icon ? iconScript : ""}
-`;
+-addoverwrite "${indexesPath}", RCDATA,${indexesKey},1033
+-addoverwrite "${dataPath}", RCDATA,${dataKey},1033
+
+${iconScript}`;
 
     await fs.write(pathJoin(buildPath, "bundle_script.txt"), script);
 
     try {
-      await runCmd(pathJoin(buildPath, "ResourceHacker.exe"), [
+      await runCmd(resourceHackerPath, [
         "-script",
         pathJoin(buildPath, "bundle_script.txt"),
       ]);
     } catch (err) {
       await process.open(buildPath);
-      throw err;
+      throw new Error(`${locale.t("BUILD_FAILED")}: ${err.message}`);
     }
+
+    await runCmd(resourceHackerPath, [
+      "-open", targetExe,
+      "-save", targetExe,
+      "-action", "addoverwrite",
+      "-res", versionResPath,
+      "-mask", "VERSIONINFO"
+    ]);
   });
 
   progress.addTask(locale.t("CLEAN_BUILD_ENVIRONMENT"), async () => {
-    await fs.remove(buildPath);
+    try {
+      await fs.remove(buildPath);
+    } catch (e) {
+      console.warn("Clean build environment failed:", e);
+    }
   });
 
   return targetExe;

@@ -174,9 +174,9 @@ export const isFirstOpenToday = () => {
 }
 
 export const checkVersion = (modal: ModalModel, locale: LocaleModel) => {
-  return Niva.api.http.get('https://api.github.com/repos/bramblex/niva/releases/latest')
+  return Niva.api.http.fetch({url: 'https://api.github.com/repos/bramblex/niva/releases/latest'})
     .then(res => {
-      const remoteVersion = JSON.parse(res?.body)?.tag_name;
+      const remoteVersion = JSON.parse(res?.response.body)?.tag_name;
       Niva.api.process.version().then(localVersion => {
         if (remoteVersion && isFirstOpenToday() && localVersion !== remoteVersion) {
           modal.confirm(locale.t('NEWER_VERSION_TIP'), locale.t('NEWER_VERSION_TEXT', {
